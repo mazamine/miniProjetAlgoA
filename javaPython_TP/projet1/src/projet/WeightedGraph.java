@@ -1,12 +1,13 @@
-package src;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
 
 // Classe définissant un graphe pondéré.
 public class WeightedGraph {
+
     // Sous-classe pour une arrête.
     static class Edge {
+
         int source;
         int destination;
         double weight;
@@ -21,6 +22,7 @@ public class WeightedGraph {
 
     // Sous-classe pour un sommet.
     static class Vertex {
+
         double indivTime; // Temps individuel pour traverser le sommet
         double timeFromSource; // Temps pour traverser le sommet depuis la source.
         double heuristic; // Temps estimé pour atteindre la destination depuis le sommet.
@@ -65,6 +67,7 @@ public class WeightedGraph {
 
     // Sous-classe pour le graphe.
     static class Graph {
+
         ArrayList<Vertex> vertexList; // Liste des sommets.
         int num_v = 0; // Nombre de sommets.
 

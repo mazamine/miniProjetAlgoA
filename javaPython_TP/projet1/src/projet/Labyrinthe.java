@@ -1,4 +1,3 @@
-package src;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,14 +10,15 @@ public class Labyrinthe extends WeightedGraph {
     // private char[][] labyrinthe; // labyrinthe sous forme de matrice
     // private Graph graph; // graphe représentant le labyrinthe
 
-
     /**
      * Méthode qui gère la propagation du feu
+     *
      * @param num_v numéro du sommet
      * @param vertexList liste des sommets
      * @param nLines nombre de lignes
      * @param nCols nombre de colonnes
-     * @return true si le prisonnier est mort (pas de solution qu'il survit), false sinon
+     * @return true si le prisonnier est mort (pas de solution qu'il survit),
+     * false sinon
      */
     public static boolean burnAround(int num_v, ArrayList<Vertex> vertexList, int nline, int ncol) {
         // 'A' to avoid flame propagation on the same turn they are created
@@ -29,8 +29,8 @@ public class Labyrinthe extends WeightedGraph {
             if (vLeft.vertexName == '.') {
                 vLeft.vertexName = 'A';
             } else if (vLeft.vertexName == 'D' || vLeft.vertexName == 'S') { // si le prisonnier 'D' ou la sortie 'S'
-                                                                             // est à côté du feu, le jeu est terminé et
-                                                                             // le prisonnier est mort
+                // est à côté du feu, le jeu est terminé et
+                // le prisonnier est mort
                 return true;
             }
         }
@@ -40,8 +40,8 @@ public class Labyrinthe extends WeightedGraph {
             if (vRight.vertexName == '.') {
                 vRight.vertexName = 'A';
             } else if (vRight.vertexName == 'D' || vRight.vertexName == 'S') { // si le prisonnier 'D' ou la sortie 'S'
-                                                                               // est à côté du feu, le jeu est terminé
-                                                                               // et le prisonnier est mort
+                // est à côté du feu, le jeu est terminé
+                // et le prisonnier est mort
                 return true;
             }
         }
@@ -51,8 +51,8 @@ public class Labyrinthe extends WeightedGraph {
             if (vUp.vertexName == '.') {
                 vUp.vertexName = 'A';
             } else if (vUp.vertexName == 'D' || vUp.vertexName == 'S') { // si le prisonnier 'D' ou la sortie 'S' est à
-                                                                         // côté du feu, le jeu est terminé et le
-                                                                         // prisonnier est mort
+                // côté du feu, le jeu est terminé et le
+                // prisonnier est mort
                 return true;
             }
         }
@@ -62,17 +62,17 @@ public class Labyrinthe extends WeightedGraph {
             if (vDown.vertexName == '.') {
                 vDown.vertexName = 'A';
             } else if (vDown.vertexName == 'D' || vDown.vertexName == 'S') { // si le prisonnier 'D' ou la sortie 'S'
-                                                                             // est à côté du feu, le jeu est terminé et
-                                                                             // le prisonnier est mort
+                // est à côté du feu, le jeu est terminé et
+                // le prisonnier est mort
                 return true;
             }
         }
         return false;
     }
 
-
     /**
      * Méthode qui vérifie si le prisonnier peut se déplacer vers un sommet
+     *
      * @param num_v numéro du sommet
      * @param vertexList liste des sommets
      * @param numberV nombre de sommets
@@ -85,7 +85,7 @@ public class Labyrinthe extends WeightedGraph {
 
         Vertex v = vertexList.get(num_v);
         if (v.vertexName == '.' || v.vertexName == 'S') { // si le sommet est libre('.') ou la sortie, le prisonnier 'D'
-                                                          // peut se déplacer
+            // peut se déplacer
             return true; // sommet vide ou sortie
         } else {
             return false; // sommet occupé par un mur '#' ou un feu 'F' ou 'A' probagation du feu
@@ -93,37 +93,41 @@ public class Labyrinthe extends WeightedGraph {
     }
     // public static boolean canMoveDir(){}
 
-
     /**
-     * Méthode qui vérifie si le prisonnier peut se déplacer vers la sortie et s'il peut gagner quand il est à côté de la sortie
+     * Méthode qui vérifie si le prisonnier peut se déplacer vers la sortie et
+     * s'il peut gagner quand il est à côté de la sortie
+     *
      * @param startVertexNumber numéro du sommet du prisonnier
      * @param vertexList liste des sommets
      * @param nLines nombre de lignes
      * @param nCols nombre de colonnes
-     * @return true si le prisonnier peut se déplacer vers la sortie, false sinon
+     * @return true si le prisonnier peut se déplacer vers la sortie, false
+     * sinon
      */
     public static boolean winMove(int startVertexNumber, ArrayList<Vertex> vertexList, int nLines, int nCols) {
         // Vérifie si le prisonnier peut se déplacer vers la case à gauche et si cette case contient la sortie
-	    	boolean left = vertexList.get(startVertexNumber).y != 0 && ( vertexList.get(startVertexNumber - 1).vertexName == 'S'); 
-			// Vérifie si le prisonnier peut se déplacer vers la case à droite et si cette case contient la sortie
-	    	boolean right = vertexList.get(startVertexNumber).y != (nCols - 1) && ( vertexList.get(startVertexNumber + 1).vertexName == 'S'); 
-			// Vérifie si le prisonnier peut se déplacer vers la case en en haut et si cette case contient la sortie
-			boolean up = vertexList.get(startVertexNumber).x != 0 && vertexList.get(startVertexNumber - nCols).vertexName == 'S'; 
-			// Vérifie si le prisonnier peut se déplacer vers la case en bas et si cette case contient la sortie
-			boolean down = vertexList.get(startVertexNumber).x != (nLines - 1) && vertexList.get(startVertexNumber + nCols).vertexName == 'S';
+        boolean left = vertexList.get(startVertexNumber).y != 0 && (vertexList.get(startVertexNumber - 1).vertexName == 'S');
+        // Vérifie si le prisonnier peut se déplacer vers la case à droite et si cette case contient la sortie
+        boolean right = vertexList.get(startVertexNumber).y != (nCols - 1) && (vertexList.get(startVertexNumber + 1).vertexName == 'S');
+        // Vérifie si le prisonnier peut se déplacer vers la case en en haut et si cette case contient la sortie
+        boolean up = vertexList.get(startVertexNumber).x != 0 && vertexList.get(startVertexNumber - nCols).vertexName == 'S';
+        // Vérifie si le prisonnier peut se déplacer vers la case en bas et si cette case contient la sortie
+        boolean down = vertexList.get(startVertexNumber).x != (nLines - 1) && vertexList.get(startVertexNumber + nCols).vertexName == 'S';
 
         return left || right || up || down; // si le prisonnier est à côté de la sortie, il a gagné :-)
     }
 
-
     /**
      * Méthode qui déplace le prisonnier
-     * @param directionMovementPossibleForThisTurn direction possible pour le prisonnier
+     *
+     * @param directionMovementPossibleForThisTurn direction possible pour le
+     * prisonnier
      * @param vertexList liste des sommets
      * @param nLines nombre de lignes
      * @param nCols nombre de colonnes
      * @param endVertexNumber numéro du sommet de la sortie
-     * @return true si le prisonnier a gagné ou s'il ne peut pas se déplacer, false sinon
+     * @return true si le prisonnier a gagné ou s'il ne peut pas se déplacer,
+     * false sinon
      */
     public static boolean movePrisoner(char directionMovementPossibleForThisTurn, ArrayList<Vertex> vertexList,
             int nLines, int nCols, int endVertexNumber) {
@@ -143,7 +147,7 @@ public class Labyrinthe extends WeightedGraph {
             return true;
         } else {
             vertexList.get(startVertexNumber).vertexName = 'L'; // on place un 'L' pour indiquer que le prisonnier est
-                                                                // déjà passé par là
+            // déjà passé par là
 
             // déplacement du prisonnier en fonction de la direction
             int newStartVertexNumber = startVertexNumber;
@@ -222,8 +226,6 @@ public class Labyrinthe extends WeightedGraph {
             // On l'enlève des noeuds à visiter
             to_visit.remove(min_v);
 
-            
-    
             // On met à jour les distances des voisins du sommet
             for (int i = 0; i < graphe.vertexList.get(min_v).adjacencylist.size(); i++) {
                 if (to_visit.contains(graphe.vertexList.get(min_v).adjacencylist.get(i).destination)) {
@@ -325,9 +327,9 @@ public class Labyrinthe extends WeightedGraph {
 
     }
 
-
     /**
      * Méthode qui retourne la liste des directions possibles pour le prisonnier
+     *
      * @param graphe graphe représentant le labyrinthe
      * @param startVertexNumber numéro du sommet du prisonnier
      * @param endVertexNumber numéro du sommet de la sortie
@@ -343,16 +345,16 @@ public class Labyrinthe extends WeightedGraph {
 
         if (res == 'A') {
             path = AStar(graphe, startVertexNumber, endVertexNumber, nCols, numberV); // on cherche le chemin le plus
-                                                                                      // court avec l'algorithme A*
+            // court avec l'algorithme A*
         }
         if (res == 'D') {
             path = Dijkstra(graphe, startVertexNumber, endVertexNumber, nCols, numberV); // on cherche le chemin le plus
-                                                                                         // court avec l'algorithme de
-                                                                                         // Dijkstra
+            // court avec l'algorithme de
+            // Dijkstra
         }
 
         ArrayList<Character> directions = new ArrayList<Character>(); // liste des directions possibles pour le
-                                                                      // prisonnier
+        // prisonnier
 
         // on parcourt le chemin le plus court et on ajoute les directions possibles
         // pour le prisonnier
@@ -370,7 +372,7 @@ public class Labyrinthe extends WeightedGraph {
                 directions.add('L'); // déplacement vers la gauche
             } else {
                 return directions; // si le chemin n'est pas valide, on retourne la liste des directions possibles
-                                   // pour le prisonnier
+                // pour le prisonnier
             }
         }
 
@@ -380,6 +382,7 @@ public class Labyrinthe extends WeightedGraph {
 
     /**
      * Méthode qui exécute une instance du jeu
+     *
      * @param graphe graphe représentant le labyrinthe
      * @param startVertexNumber numéro du sommet de départ du prisonnier
      * @param endVertexNumber numéro du sommet de la sortie
@@ -409,7 +412,7 @@ public class Labyrinthe extends WeightedGraph {
                     boolean dead = burnAround(i, graphe.vertexList, nLines, nCols);
                     if (dead) {
                         return 'N'; // le prisonnier est mort et 'N' est affiché pour dire ('N' = No = Non) que le
-                                    // prisonnier n'a pas gagné
+                        // prisonnier n'a pas gagné
                     }
                 }
             }
@@ -417,7 +420,7 @@ public class Labyrinthe extends WeightedGraph {
             // déplacement du prisonnier en fonction de la direction
             if (movePrisoner(directions.get(turn), graphe.vertexList, nLines, nCols, endVertexNumber)) {
                 return 'Y'; // le prisonnier a gagné et 'Y' est affiché pour dire ('Y' = Yes = Oui) que le
-                            // prisonnier a gagné
+                // prisonnier a gagné
             }
 
             turn++;

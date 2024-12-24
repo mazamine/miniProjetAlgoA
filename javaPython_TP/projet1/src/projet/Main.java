@@ -1,15 +1,13 @@
-package src;
 
 import java.util.Scanner;
-
 
 // Classe principale. Contient la méthode main qui permet de générer les instances de labyrinthe et d'exécuter les algorithmes de recherche de chemin les plus courts.
 public class Main extends WeightedGraph {
 
-    /*
+    /**
      * Méthode main.
-     * 
-     * @param args
+     *
+     * @param args Arguments de la ligne de commande.
      */
     public static void main(String[] args) {
 
@@ -94,8 +92,6 @@ public class Main extends WeightedGraph {
 
             System.out.println("Avec l'algorithme A*, le résultat est : " + AStar + ", et le temps d'exécution est : " + (endTime - startTime) + " ms.");
 
-            
-
             // Affichage des chemins.
             System.out.println("#####################################:");
             System.out.println("#####################################:");
@@ -131,16 +127,15 @@ public class Main extends WeightedGraph {
                 System.out.println("Le prisonnier n'est pas sauvé !");
             }
 
-
         }
 
         sc.close();
     }
 
-
-
     /**
-     * Crée les arrêtes du graphe à partir du labyrinthe et en fonction des règles du jeu.
+     * Crée les arrêtes du graphe à partir du labyrinthe et en fonction des
+     * règles du jeu.
+     *
      * @param maze Labyrinthe.
      * @param gAStar Graphe A*.
      * @param gDijkstra Graphe Dijkstra.
@@ -148,20 +143,19 @@ public class Main extends WeightedGraph {
     public static void createEdges(char[][] maze, Graph gAStar, Graph gDijkstra) {
         int x = maze.length;
         int y = maze[0].length;
-    
+
         for (int ligne = 0; ligne < x; ligne++) {
             for (int col = 0; col < y; col++) {
                 int debut = ligne * y + col;
                 int destination;
                 double weight;
-    
+
                 // On ne crée pas d'arrête pour les murs, les feux
                 if (maze[ligne][col] == '#' || maze[ligne][col] == 'F' || maze[ligne][col] == 'A' || maze[ligne][col] == 'L') {
                     continue;
                 }
-    
+
                 // Vérifie et ajoute les arrêtes pour les sommets adjacents.
-    
                 // Vérifie la cellule au-dessus.
                 if (ligne != 0 && maze[ligne - 1][col] != '#' && maze[ligne - 1][col] != 'F' && maze[ligne - 1][col] != 'A' && maze[ligne - 1][col] != 'L') {
                     destination = (ligne - 1) * y + col;
@@ -169,7 +163,7 @@ public class Main extends WeightedGraph {
                     gAStar.addEdge(debut, destination, weight);
                     gDijkstra.addEdge(debut, destination, weight);
                 }
-    
+
                 // Vérifie la cellule en-dessous.
                 if (ligne != x - 1 && (maze[ligne + 1][col] != '#' || maze[ligne + 1][col] == 'F' || maze[ligne + 1][col] == 'A') && maze[ligne + 1][col] != 'L') {
                     destination = (ligne + 1) * y + col;
@@ -177,7 +171,7 @@ public class Main extends WeightedGraph {
                     gAStar.addEdge(debut, destination, weight);
                     gDijkstra.addEdge(debut, destination, weight);
                 }
-    
+
                 // Vérifie la cellule à gauche.
                 if (col != 0 && maze[ligne][col - 1] != '#' && maze[ligne][col - 1] != 'F' && maze[ligne][col - 1] != 'A' && maze[ligne][col - 1] != 'L') {
                     destination = ligne * y + col - 1;
@@ -185,7 +179,7 @@ public class Main extends WeightedGraph {
                     gAStar.addEdge(debut, destination, weight);
                     gDijkstra.addEdge(debut, destination, weight);
                 }
-    
+
                 // Vérifie la cellule à droite.
                 if (col != y - 1 && maze[ligne][col + 1] != '#' && maze[ligne][col + 1] != 'F' && maze[ligne][col + 1] != 'A' && maze[ligne][col + 1] != 'L') {
                     destination = ligne * y + col + 1;
@@ -196,13 +190,10 @@ public class Main extends WeightedGraph {
             }
         }
     }
-    
-    
-    
-
 
     /**
      * Affiche le labyrinthe.
+     *
      * @param maze Labyrinthe.
      */
     public static void printMaze(char[][] maze) {
@@ -216,5 +207,5 @@ public class Main extends WeightedGraph {
             System.out.println(line);
         }
     }
-    
+
 }
