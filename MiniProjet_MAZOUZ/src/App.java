@@ -1,6 +1,8 @@
 
 import java.util.List;
 import java.util.Scanner;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -12,12 +14,16 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class App extends Application {
 
     private Maze maze;
     private GridPane mazeGrid;
     private String mazeText; // Store the maze text
+    private List<Node> path; // Store the path found by A* search
+    private int pathIndex; // Current index in the path
+    private Timeline timeline; // Declare the timeline variable
 
     public static void main(String[] args) {
         launch(args);
@@ -33,25 +39,10 @@ public class App extends Application {
         Button loadMazeButton = new Button("Load Maze");
         loadMazeButton.setOnAction(e -> showMazeInputWindow());
 
-        Button moveUpButton = new Button("Move Up");
-        moveUpButton.setOnAction(e -> movePrisoner('T'));
+        Button nextButton = new Button("Next");
+        nextButton.setOnAction(e -> moveToNextStep());
 
-        Button moveDownButton = new Button("Move Down");
-        moveDownButton.setOnAction(e -> movePrisoner('B'));
-
-        Button moveLeftButton = new Button("Move Left");
-        moveLeftButton.setOnAction(e -> movePrisoner('L'));
-
-        Button moveRightButton = new Button("Move Right");
-        moveRightButton.setOnAction(e -> movePrisoner('R'));
-
-        GridPane buttonGrid = new GridPane();
-        buttonGrid.add(moveUpButton, 1, 0);
-        buttonGrid.add(moveLeftButton, 0, 1);
-        buttonGrid.add(moveDownButton, 1, 1);
-        buttonGrid.add(moveRightButton, 2, 1);
-
-        root.getChildren().addAll(loadMazeButton, mazeGrid, buttonGrid);
+        root.getChildren().addAll(loadMazeButton, nextButton, mazeGrid);
 
         primaryStage.setScene(new Scene(root, 400, 400));
         primaryStage.show();
@@ -90,23 +81,37 @@ public class App extends Application {
 
         maze = new Maze(mazeArray);
         updateMazeDisplay();
+
+        // Find the shortest path using A* search
+        AStarSearch aStarSearch = new AStarSearch(maze);
+        path = aStarSearch.findPath(maze.getPrisonerPosition(), maze.getExitPosition());
+        pathIndex = 0;
     }
 
-    private void movePrisoner(char direction) {
-        if (maze != null) {
-            boolean win = maze.movePrisoner(direction);
-            boolean fireCaught = maze.spreadFire();
+    private void moveToNextStep() {
+        if (path == null || path.isEmpty()) {
+            showGameOverAlert("Game Over", "No path found!");
+            return;
+        }
+
+        FireMovement fireMovement = new FireMovement(maze.getMaze());
+
+        if (pathIndex < path.size()) {
+            Node currentNode = path.get(pathIndex);
+            maze.movePrisonerTo(currentNode.getX(), currentNode.getY());
             updateMazeDisplay();
 
-            if (win && maze.getMaze()[maze.getExitX()][maze.getExitY()] != 'F') {
-                showAlert("Congratulations!", "The prisoner has escaped!");
-            } else if (fireCaught || (win && maze.getMaze()[maze.getExitX()][maze.getExitY()] == 'F')) {
-                if (maze.getMaze()[maze.getExitX()][maze.getExitY()] == 'F') {
-                    showGameOverAlert("Game Over", "The exit has been burned!");
-                } else {
-                    showGameOverAlert("Game Over", "The prisoner has been caught by the fire!");
-                }
+            if (maze.getMaze()[maze.getExitX()][maze.getExitY()] == 'F') {
+                showGameOverAlert("Game Over", "The exit has been burned!");
+            } else if (maze.getMaze()[currentNode.getX()][currentNode.getY()] == 'F') {
+                showGameOverAlert("Game Over", "The prisoner has been caught by the fire!");
+            } else if (currentNode.equals(maze.getExitPosition())) {
+                showCongratsAlert("Congratulations!", "The prisoner has escaped!");
             }
+
+            maze.spreadFire();
+            updateMazeDisplay();
+            pathIndex++;
         }
     }
 
@@ -125,11 +130,25 @@ public class App extends Application {
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showCongratsAlert(String title, String message) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        Button replayButton = new Button("Replay");
+        replayButton.setOnAction(e -> {
+            alert.close();
+            loadMaze(mazeText); // Reload the same maze
+        });
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(e -> Platform.exit());
+
+        VBox alertContent = new VBox();
+        alertContent.getChildren().addAll(replayButton, closeButton);
+        alert.getDialogPane().setContent(alertContent);
+
         alert.showAndWait();
     }
 

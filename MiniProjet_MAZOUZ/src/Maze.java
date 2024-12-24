@@ -98,6 +98,15 @@ public class Maze {
         }
 
         if (isValidMove(newX, newY)) {
+            // Check if the fire will spread to the new position
+            for (int[] firePosition : firePositions) {
+                int fireX = firePosition[0];
+                int fireY = firePosition[1];
+                if ((fireX == newX && Math.abs(fireY - newY) == 1) || (fireY == newY && Math.abs(fireX - newX) == 1)) {
+                    return false; // Fire and player heading to the same block
+                }
+            }
+
             if (maze[newX][newY] == 'S') {
                 if (maze[exitX][exitY] == 'F') {
                     return false; // Fire and player reach 'S' at the same time
@@ -110,6 +119,15 @@ public class Maze {
             maze[prisonerX][prisonerY] = 'P';
         }
         return false;
+    }
+
+    public void movePrisonerTo(int x, int y) {
+        if (isValidMove(x, y)) {
+            maze[prisonerX][prisonerY] = '.'; // Clear the previous position
+            prisonerX = x;
+            prisonerY = y;
+            maze[prisonerX][prisonerY] = 'P';
+        }
     }
 
     public boolean spreadFire() {

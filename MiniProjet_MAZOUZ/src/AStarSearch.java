@@ -42,9 +42,6 @@ public class AStarSearch {
                 neighbor.setH(heuristic(neighbor, goal));
                 neighbor.setParent(current);
             }
-
-            // Spread fire after each move
-            spreadFire();
         }
 
         return Collections.emptyList(); // No path found
@@ -78,32 +75,6 @@ public class AStarSearch {
             }
         }
         return false;
-    }
-
-    private void spreadFire() {
-        List<int[]> newFires = new ArrayList<>();
-        for (int[] firePosition : maze.getFirePositions()) {
-            int x = firePosition[0];
-            int y = firePosition[1];
-
-            if (maze.isValidMove(x - 1, y) && maze.getMaze()[x - 1][y] == '.') {
-                newFires.add(new int[]{x - 1, y});
-            }
-            if (maze.isValidMove(x + 1, y) && maze.getMaze()[x + 1][y] == '.') {
-                newFires.add(new int[]{x + 1, y});
-            }
-            if (maze.isValidMove(x, y - 1) && maze.getMaze()[x][y - 1] == '.') {
-                newFires.add(new int[]{x, y - 1});
-            }
-            if (maze.isValidMove(x, y + 1) && maze.getMaze()[x][y + 1] == '.') {
-                newFires.add(new int[]{x, y + 1});
-            }
-        }
-
-        for (int[] newFire : newFires) {
-            maze.getMaze()[newFire[0]][newFire[1]] = 'F';
-            maze.getFirePositions().add(newFire);
-        }
     }
 
     private double distance(Node a, Node b) {

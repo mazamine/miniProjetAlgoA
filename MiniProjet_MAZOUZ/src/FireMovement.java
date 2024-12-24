@@ -1,4 +1,6 @@
+
 public class FireMovement {
+
     private char[][] maze;
     private int rows;
     private int cols;
@@ -28,16 +30,16 @@ public class FireMovement {
     }
 
     private void spreadFireFrom(int x, int y, char[][] newMaze) {
-        if (x > 0 && newMaze[x - 1][y] == ' ') {
+        if (x > 0 && newMaze[x - 1][y] == '.') {
             newMaze[x - 1][y] = 'F';
         }
-        if (x < rows - 1 && newMaze[x + 1][y] == ' ') {
+        if (x < rows - 1 && newMaze[x + 1][y] == '.') {
             newMaze[x + 1][y] = 'F';
         }
-        if (y > 0 && newMaze[x][y - 1] == ' ') {
+        if (y > 0 && newMaze[x][y - 1] == '.') {
             newMaze[x][y - 1] = 'F';
         }
-        if (y < cols - 1 && newMaze[x][y + 1] == ' ') {
+        if (y < cols - 1 && newMaze[x][y + 1] == '.') {
             newMaze[x][y + 1] = 'F';
         }
     }
