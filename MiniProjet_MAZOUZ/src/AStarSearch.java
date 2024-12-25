@@ -15,6 +15,8 @@ public class AStarSearch {
 
     public List<Node> findPath(Node start, Node goal) {
         openSet.add(start);
+        start.setG(0);
+        start.setH(heuristic(start, goal));
 
         while (!openSet.isEmpty()) {
             Node current = openSet.poll();
@@ -78,11 +80,11 @@ public class AStarSearch {
     }
 
     private double distance(Node a, Node b) {
-        return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getY() - b.getY(), 2));
+        return 1; // Since we are moving in a grid, the distance between adjacent nodes is always 1
     }
 
     private double heuristic(Node a, Node b) {
-        return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
+        return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY()); // Manhattan distance
     }
 
     private List<Node> reconstructPath(Node current) {
