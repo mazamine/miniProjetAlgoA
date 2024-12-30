@@ -18,18 +18,18 @@ public class Maze {
     private List<int[]> firePositions;
 
     /**
-     * Constructor for Maze.
+     * Constructeur pour Maze.
      *
-     * @param filePath the file path to load the maze from
+     * @param filePath le chemin du fichier pour charger le labyrinthe
      */
     public Maze(String filePath) {
         loadMaze(filePath);
     }
 
     /**
-     * Constructor for Maze.
+     * Constructeur pour Maze.
      *
-     * @param mazeArray the maze array
+     * @param mazeArray le tableau du labyrinthe
      */
     public Maze(char[][] mazeArray) {
         this.rows = mazeArray.length;
@@ -37,13 +37,13 @@ public class Maze {
         this.maze = mazeArray;
         this.firePositions = new ArrayList<>();
 
-        // Initialize the maze and find the positions of the prisoner, exit, and fire
+        // Initialiser le labyrinthe et trouver les positions du prisonnier, de la sortie et du feu
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (maze[i][j] == 'D') {
                     prisonerX = i;
                     prisonerY = j;
-                    maze[i][j] = 'P'; // Set initial position to 'P'
+                    maze[i][j] = 'P'; // Définir la position initiale à 'P'
                 } else if (maze[i][j] == 'S') {
                     exitX = i;
                     exitY = j;
@@ -55,9 +55,9 @@ public class Maze {
     }
 
     /**
-     * Loads the maze from a file.
+     * Charge le labyrinthe à partir d'un fichier.
      *
-     * @param filePath the file path to load the maze from
+     * @param filePath le chemin du fichier pour charger le labyrinthe
      */
     private void loadMaze(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -71,14 +71,14 @@ public class Maze {
             maze = new char[rows][cols];
             firePositions = new ArrayList<>();
 
-            // Initialize the maze and find the positions of the prisoner, exit, and fire
+            // Initialiser le labyrinthe et trouver les positions du prisonnier, de la sortie et du feu
             for (int i = 0; i < rows; i++) {
                 maze[i] = mazeList.get(i);
                 for (int j = 0; j < cols; j++) {
                     if (maze[i][j] == 'D') {
                         prisonerX = i;
                         prisonerY = j;
-                        maze[i][j] = 'P'; // Set initial position to 'P'
+                        maze[i][j] = 'P'; // Définir la position initiale à 'P'
                     } else if (maze[i][j] == 'S') {
                         exitX = i;
                         exitY = j;
@@ -93,21 +93,21 @@ public class Maze {
     }
 
     /**
-     * Checks if a move is valid.
+     * Vérifie si un mouvement est valide.
      *
-     * @param x the x-coordinate
-     * @param y the y-coordinate
-     * @return true if the move is valid, false otherwise
+     * @param x la coordonnée x
+     * @param y la coordonnée y
+     * @return true si le mouvement est valide, false sinon
      */
     public boolean isValidMove(int x, int y) {
         return x >= 0 && x < rows && y >= 0 && y < cols && (maze[x][y] == '.' || maze[x][y] == 'S');
     }
 
     /**
-     * Moves the prisoner in the specified direction.
+     * Déplace le prisonnier dans la direction spécifiée.
      *
-     * @param direction the direction to move ('T', 'B', 'L', 'R')
-     * @return true if the move is successful, false otherwise
+     * @param direction la direction à déplacer ('T', 'B', 'L', 'R')
+     * @return true si le mouvement est réussi, false sinon
      */
     public boolean movePrisoner(char direction) {
         int newX = prisonerX;
@@ -129,22 +129,22 @@ public class Maze {
         }
 
         if (isValidMove(newX, newY)) {
-            // Check if the fire will spread to the new position
+            // Vérifier si le feu se propagera à la nouvelle position
             for (int[] firePosition : firePositions) {
                 int fireX = firePosition[0];
                 int fireY = firePosition[1];
                 if ((fireX == newX && Math.abs(fireY - newY) == 1) || (fireY == newY && Math.abs(fireX - newX) == 1)) {
-                    return false; // Fire and player heading to the same block
+                    return false; // Le feu et le joueur se dirigent vers le même bloc
                 }
             }
 
             if (maze[newX][newY] == 'S') {
                 if (maze[exitX][exitY] == 'F') {
-                    return false; // Fire and player reach 'S' at the same time
+                    return false; // Le feu et le joueur atteignent 'S' en même temps
                 }
-                return true; // Prisoner wins
+                return true; // Le prisonnier gagne
             }
-            maze[prisonerX][prisonerY] = '.'; // Clear the previous position
+            maze[prisonerX][prisonerY] = '.'; // Effacer la position précédente
             prisonerX = newX;
             prisonerY = newY;
             maze[prisonerX][prisonerY] = 'P';
@@ -153,15 +153,15 @@ public class Maze {
     }
 
     /**
-     * Moves the prisoner to the specified coordinates.
+     * Déplace le prisonnier aux coordonnées spécifiées.
      *
-     * @param x the x-coordinate
-     * @param y the y-coordinate
+     * @param x la coordonnée x
+     * @param y la coordonnée y
      */
     public void movePrisonerTo(int x, int y) {
         if (isValidMove(x, y)) {
             if (maze[prisonerX][prisonerY] == 'P' || maze[prisonerX][prisonerY] == 'D') {
-                maze[prisonerX][prisonerY] = '.'; // Clear the previous position
+                maze[prisonerX][prisonerY] = '.'; // Effacer la position précédente
             }
             prisonerX = x;
             prisonerY = y;
@@ -170,10 +170,9 @@ public class Maze {
     }
 
     /**
-     * Spreads the fire in the maze.
+     * Propage le feu dans le labyrinthe.
      *
-     * @return true if the fire catches the prisoner or the exit, false
-     * otherwise
+     * @return true si le feu attrape le prisonnier ou la sortie, false sinon
      */
     public boolean spreadFire() {
         List<int[]> newFires = new ArrayList<>();
@@ -197,11 +196,11 @@ public class Maze {
 
         for (int[] newFire : newFires) {
             if (maze[newFire[0]][newFire[1]] == 'P') {
-                return true; // Fire catches the prisoner
+                return true; // Le feu attrape le prisonnier
             }
             if (maze[newFire[0]][newFire[1]] == 'S') {
                 maze[newFire[0]][newFire[1]] = 'F';
-                return true; // Fire catches the exit
+                return true; // Le feu attrape la sortie
             }
             maze[newFire[0]][newFire[1]] = 'F';
             firePositions.add(newFire);
@@ -210,72 +209,72 @@ public class Maze {
     }
 
     /**
-     * Gets the maze array.
+     * Obtient le tableau du labyrinthe.
      *
-     * @return the maze array
+     * @return le tableau du labyrinthe
      */
     public char[][] getMaze() {
         return maze;
     }
 
     /**
-     * Gets the x-coordinate of the prisoner.
+     * Obtient la coordonnée x du prisonnier.
      *
-     * @return the x-coordinate of the prisoner
+     * @return la coordonnée x du prisonnier
      */
     public int getPrisonerX() {
         return prisonerX;
     }
 
     /**
-     * Gets the y-coordinate of the prisoner.
+     * Obtient la coordonnée y du prisonnier.
      *
-     * @return the y-coordinate of the prisoner
+     * @return la coordonnée y du prisonnier
      */
     public int getPrisonerY() {
         return prisonerY;
     }
 
     /**
-     * Gets the x-coordinate of the exit.
+     * Obtient la coordonnée x de la sortie.
      *
-     * @return the x-coordinate of the exit
+     * @return la coordonnée x de la sortie
      */
     public int getExitX() {
         return exitX;
     }
 
     /**
-     * Gets the y-coordinate of the exit.
+     * Obtient la coordonnée y de la sortie.
      *
-     * @return the y-coordinate of the exit
+     * @return la coordonnée y de la sortie
      */
     public int getExitY() {
         return exitY;
     }
 
     /**
-     * Gets the fire positions.
+     * Obtient les positions du feu.
      *
-     * @return the fire positions
+     * @return les positions du feu
      */
     public List<int[]> getFirePositions() {
         return firePositions;
     }
 
     /**
-     * Gets the position of the prisoner as a Node.
+     * Obtient la position du prisonnier en tant que Node.
      *
-     * @return the position of the prisoner
+     * @return la position du prisonnier
      */
     public Node getPrisonerPosition() {
         return new Node(prisonerX, prisonerY, 0, 0, null);
     }
 
     /**
-     * Gets the position of the exit as a Node.
+     * Obtient la position de la sortie en tant que Node.
      *
-     * @return the position of the exit
+     * @return la position de la sortie
      */
     public Node getExitPosition() {
         return new Node(exitX, exitY, 0, 0, null);

@@ -24,7 +24,6 @@ prisoner-pardon-maze
 ## Prérequis
 
 - Java Development Kit (JDK) installé
-- JavaFX SDK installé
 - Un terminal ou une invite de commande
 
 ## Partie 1 : Prisoner Pardon Maze
@@ -42,7 +41,7 @@ prisoner-pardon-maze
 Pour compiler les fichiers Java exécutez :
 
 ```sh
-javac -d bin --module-path D:/javafx-sdk-11/lib --add-modules javafx.controls ./src/MiniProjet_MAZOUZ/*.java
+PS C:\Users\amine\Desktop\MiniProjet> javac -d bin .\src\MiniProjet_MAZOUZ\*.java
 ```
 
 Cette commande compile les fichiers Java et place les classes compilées dans le répertoire `bin`.
@@ -52,7 +51,7 @@ Cette commande compile les fichiers Java et place les classes compilées dans le
 Pour exécuter l'application, utilisez la commande suivante :
 
 ```sh
-java --module-path D:/javafx-sdk-11/lib --add-modules javafx.controls -cp bin MiniProjet_MAZOUZ.App
+PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MiniProjet_MAZOUZ.App
 ```
 
 ## Partie 2 : Évasion du Labyrinthe
@@ -69,7 +68,7 @@ java --module-path D:/javafx-sdk-11/lib --add-modules javafx.controls -cp bin Mi
 Pour compiler les fichiers Java, naviguez vers le répertoire `src` et exécutez :
 
 ```sh
-javac -d bin ./src/MainApp/*.java
+PS C:\Users\amine\Desktop\MiniProjet> javac -d bin .\src\MainApp\*.java
 ```
 
 Cette commande compile les fichiers Java et place les classes compilées dans la structure de répertoires correcte.
@@ -79,7 +78,7 @@ Cette commande compile les fichiers Java et place les classes compilées dans la
 Pour exécuter l'application, utilisez la commande suivante :
 
 ```sh
-java -cp bin MainApp.App chemin/vers/fichier/graph algorithme
+PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MainApp.App C:\Users\amine\Desktop\MiniProjet\graph.txt djikstra
 ```
 
 - `<chemin_vers_fichier_graph>`: Chemin vers le fichier `graph.txt`.
@@ -90,13 +89,13 @@ java -cp bin MainApp.App chemin/vers/fichier/graph algorithme
 Exécuter l'application en utilisant l'algorithme de Dijkstra :
 
 ```sh
-java -cp . MainApp.App C:/Users/amine/Desktop/MiniProjet/src/MainApp/graph.txt dijkstra
+PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MainApp.App C:\Users\amine\Desktop\MiniProjet\graph.txt dijkstra
 ```
 
 Exécuter l'application en utilisant l'algorithme A* :
 
 ```sh
-java -cp . MainApp.App C:/Users/amine/Desktop/MiniProjet/src/MainApp/graph.txt astar
+PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MainApp.App C:\Users\amine\Desktop\MiniProjet\graph.txt astar
 ```
 
 ### Sortie

@@ -11,13 +11,13 @@ public class Node {
     private double h;
 
     /**
-     * Constructor for Node.
+     * Constructeur pour Node.
      *
-     * @param x the x-coordinate
-     * @param y the y-coordinate
-     * @param cost the cost to reach this node
-     * @param heuristic the heuristic value for this node
-     * @param parent the parent node
+     * @param x la coordonnée x
+     * @param y la coordonnée y
+     * @param cost le coût pour atteindre ce nœud
+     * @param heuristic la valeur heuristique pour ce nœud
+     * @param parent le nœud parent
      */
     public Node(int x, int y, int cost, int heuristic, Node parent) {
         this.x = x;
@@ -28,108 +28,108 @@ public class Node {
     }
 
     /**
-     * Gets the x-coordinate.
+     * Obtient la coordonnée x.
      *
-     * @return the x-coordinate
+     * @return la coordonnée x
      */
     public int getX() {
         return x;
     }
 
     /**
-     * Gets the y-coordinate.
+     * Obtient la coordonnée y.
      *
-     * @return the y-coordinate
+     * @return la coordonnée y
      */
     public int getY() {
         return y;
     }
 
     /**
-     * Gets the cost to reach this node.
+     * Obtient le coût pour atteindre ce nœud.
      *
-     * @return the cost
+     * @return le coût
      */
     public int getCost() {
         return cost;
     }
 
     /**
-     * Gets the heuristic value for this node.
+     * Obtient la valeur heuristique pour ce nœud.
      *
-     * @return the heuristic value
+     * @return la valeur heuristique
      */
     public int getHeuristic() {
         return heuristic;
     }
 
     /**
-     * Gets the parent node.
+     * Obtient le nœud parent.
      *
-     * @return the parent node
+     * @return le nœud parent
      */
     public Node getParent() {
         return parent;
     }
 
     /**
-     * Sets the parent node.
+     * Définit le nœud parent.
      *
-     * @param parent the parent node
+     * @param parent le nœud parent
      */
     public void setParent(Node parent) {
         this.parent = parent;
     }
 
     /**
-     * Gets the total cost (cost + heuristic).
+     * Obtient le coût total (coût + heuristique).
      *
-     * @return the total cost
+     * @return le coût total
      */
     public int getTotalCost() {
         return cost + heuristic;
     }
 
     /**
-     * Gets the g value.
+     * Obtient la valeur g.
      *
-     * @return the g value
+     * @return la valeur g
      */
     public double getG() {
         return g;
     }
 
     /**
-     * Sets the g value.
+     * Définit la valeur g.
      *
-     * @param g the g value
+     * @param g la valeur g
      */
     public void setG(double g) {
         this.g = g;
     }
 
     /**
-     * Gets the h value.
+     * Obtient la valeur h.
      *
-     * @return the h value
+     * @return la valeur h
      */
     public double getH() {
         return h;
     }
 
     /**
-     * Sets the h value.
+     * Définit la valeur h.
      *
-     * @param h the h value
+     * @param h la valeur h
      */
     public void setH(double h) {
         this.h = h;
     }
 
     /**
-     * Gets the f value (g + h).
+     * Obtient la valeur f (g + h).
      *
-     * @return the f value
+     * @return la valeur f
      */
     public double getF() {
         return g + h;

@@ -10,35 +10,36 @@ public class AStarSearch {
     private final Maze maze;
 
     /**
-     * Constructor for AStarSearch.
+     * Constructeur pour AStarSearch.
      *
-     * @param maze the maze
+     * @param maze le labyrinthe
      */
     public AStarSearch(Maze maze) {
         this.maze = maze;
     }
 
     /**
-     * Finds the shortest path from start to goal using A* search.
+     * Trouve le chemin le plus court du départ à l'objectif en utilisant la
+     * recherche A*.
      *
-     * @param graph the graph representing the maze
-     * @param start the start node
-     * @param goal the goal node
-     * @param ncols the number of columns in the maze
-     * @param numberV the number of vertices in the maze
-     * @return the list of nodes representing the shortest path
+     * @param graph le graphe représentant le labyrinthe
+     * @param start le nœud de départ
+     * @param goal le nœud objectif
+     * @param ncols le nombre de colonnes dans le labyrinthe
+     * @param numberV le nombre de sommets dans le labyrinthe
+     * @return la liste des nœuds représentant le chemin le plus court
      */
     public static LinkedList<Integer> AStar(Graph graph, int start, int goal, int ncols, int numberV) {
         graph.vertexlist.get(start).timeFromSource = 0;
         int number_tries = 0;
 
-        // Add all nodes to the set of nodes to visit
+        // Ajouter tous les nœuds à l'ensemble des nœuds à visiter
         HashSet<Integer> to_visit = new HashSet<>();
         for (int i = 0; i < numberV; i++) {
             to_visit.add(i);
         }
 
-        // Fill the heuristic attribute for all nodes
+        // Remplir l'attribut heuristique pour tous les nœuds
         for (WeightedGraph.Vertex v : graph.vertexlist) {
             int vRow = v.num / ncols;
             int vCol = v.num % ncols;
@@ -46,12 +47,12 @@ public class AStarSearch {
             int endRow = goal / ncols;
             int endCol = goal % ncols;
 
-            // Calculate the Manhattan distance to the goal
+            // Calculer la distance de Manhattan jusqu'à l'objectif
             v.heuristic = Math.abs(vRow - endRow) + Math.abs(vCol - endCol);
         }
 
         while (to_visit.contains(goal)) {
-            // Find the node with the minimum temporary distance
+            // Trouver le nœud avec la distance temporaire minimale
             double minDistance = Double.POSITIVE_INFINITY;
             int min_v = -1;
 
@@ -63,11 +64,11 @@ public class AStarSearch {
                 }
             }
 
-            // Remove the node from the set of nodes to visit
+            // Retirer le nœud de l'ensemble des nœuds à visiter
             to_visit.remove(min_v);
             number_tries += 1;
 
-            // Check if we are faster by passing through this node
+            // Vérifier si nous sommes plus rapides en passant par ce nœud
             for (int i = 0; i < graph.vertexlist.get(min_v).adjacencylist.size(); i++) {
                 int to_try = graph.vertexlist.get(min_v).adjacencylist.get(i).destination;
                 double newTimeFromSource = graph.vertexlist.get(min_v).timeFromSource
@@ -80,13 +81,16 @@ public class AStarSearch {
             }
         }
 
-        System.out.println("Done! Using A*:");
-        System.out.println("    Number of nodes explored: " + number_tries);
-        System.out.println("    Total time of the path: " + graph.vertexlist.get(goal).timeFromSource);
+        System.out.println("Terminé ! Utilisation de A* :");
+        System.out.println("    Nombre de nœuds explorés : " + number_tries);
+        System.out.println("    Temps total du chemin : " + graph.vertexlist.get(goal).timeFromSource);
         LinkedList<Integer> path = new LinkedList<>();
         int current = goal;
         while (current != start) {
             path.addFirst(current);
+            if (graph.vertexlist.get(current).prev == null) {
+                break;
+            }
             current = graph.vertexlist.get(current).prev.num;
         }
 

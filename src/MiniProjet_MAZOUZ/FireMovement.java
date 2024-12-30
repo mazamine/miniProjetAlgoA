@@ -7,9 +7,9 @@ public class FireMovement {
     private int cols;
 
     /**
-     * Constructor for FireMovement.
+     * Constructeur pour FireMovement.
      *
-     * @param maze the maze array
+     * @param maze le tableau du labyrinthe
      */
     public FireMovement(char[][] maze) {
         this.maze = maze;
@@ -18,17 +18,17 @@ public class FireMovement {
     }
 
     /**
-     * Spreads the fire in the maze.
+     * Propage le feu dans le labyrinthe.
      */
     public void spreadFire() {
         char[][] newMaze = new char[rows][cols];
 
-        // Copy the current maze to the new maze
+        // Copier le labyrinthe actuel dans le nouveau labyrinthe
         for (int i = 0; i < rows; i++) {
             System.arraycopy(maze[i], 0, newMaze[i], 0, cols);
         }
 
-        // Spread the fire from each fire position
+        // Propage le feu à partir de chaque position de feu
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (maze[i][j] == 'F') {
@@ -41,11 +41,11 @@ public class FireMovement {
     }
 
     /**
-     * Spreads the fire from the given coordinates.
+     * Propage le feu à partir des coordonnées données.
      *
-     * @param x the x-coordinate
-     * @param y the y-coordinate
-     * @param newMaze the new maze array
+     * @param x la coordonnée x
+     * @param y la coordonnée y
+     * @param newMaze le nouveau tableau du labyrinthe
      */
     private void spreadFireFrom(int x, int y, char[][] newMaze) {
         if (x > 0 && newMaze[x - 1][y] == '.') {
@@ -63,9 +63,9 @@ public class FireMovement {
     }
 
     /**
-     * Gets the maze array.
+     * Obtient le tableau du labyrinthe.
      *
-     * @return the maze array
+     * @return le tableau du labyrinthe
      */
     public char[][] getMaze() {
         return maze;

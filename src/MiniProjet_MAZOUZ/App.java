@@ -30,13 +30,14 @@ public class App extends JFrame {
 
     private Maze maze;
     private JPanel mazePanel;
-    private String mazeText; // Store the maze text
-    private List<Node> path; // Store the path found by A* search
-    private int pathIndex; // Current index in the path
+    private String mazeText; // Stocker le texte du labyrinthe
+    private List<Node> path; // Stocker le chemin trouvé par la recherche A*
+    private int pathIndex; // Index actuel dans le chemin
     private PriorityQueue<Node> openSet;
     private Set<Node> closedSet;
     private Node goal;
     private boolean pathFound;
+    private int clickCount = 0; // Compteur de clics pour le bouton "Suivant"
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -78,7 +79,7 @@ public class App extends JFrame {
 
         JButton submitButton = new JButton("Soumettre");
         submitButton.addActionListener(e -> {
-            mazeText = inputArea.getText(); // Store the maze text
+            mazeText = inputArea.getText(); // Stocker le texte du labyrinthe
             loadMaze(mazeText);
             inputFrame.dispose();
         });
@@ -101,7 +102,7 @@ public class App extends JFrame {
         maze = new Maze(mazeArray);
         updateMazeDisplay();
 
-        // Initialize A* search
+        // Initialiser la recherche A*
         openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getF));
         closedSet = new HashSet<>();
         Node start = maze.getPrisonerPosition();
@@ -114,19 +115,26 @@ public class App extends JFrame {
     }
 
     private void moveToNextStep() {
+        clickCount++;
         if (pathFound) {
             if (pathIndex < path.size()) {
                 Node currentNode = path.get(pathIndex);
                 maze.movePrisonerTo(currentNode.getX(), currentNode.getY());
-                maze.spreadFire();
+                //le feu commençait a se propager avant que le Prisonnier bouge, donc j'ai forcé pour que le feu commence a se propager a partir du deuxieme clique
+                if (clickCount >= 2) {
+                    maze.spreadFire();
+                }
                 updateMazeDisplay();
 
                 if (maze.getMaze()[maze.getExitX()][maze.getExitY()] == 'F') {
-                    showGameOverDialog("Fin de Partie", "La sortie a été brûlée !");
+                    showGameOverDialog("GAME OVER", "La sortie a été brûlée !");
+                    System.out.println("N");
                 } else if (maze.getMaze()[currentNode.getX()][currentNode.getY()] == 'F') {
-                    showGameOverDialog("Fin de Partie", "Le prisonnier a été attrapé par le feu !");
+                    showGameOverDialog("GAME OVER", "Le prisonnier a été attrapé par le feu !");
+                    System.out.println("N");
                 } else if (currentNode.equals(maze.getExitPosition())) {
                     showCongratsDialog("Félicitations !", "Le prisonnier s'est échappé !");
+                    System.out.println("Y");
                 }
 
                 pathIndex++;
@@ -164,7 +172,7 @@ public class App extends JFrame {
 
                 updateMazeDisplay();
                 try {
-                    Thread.sleep(100); // Pause to visualize the search process
+                    Thread.sleep(200); // Pause pour visualiser le processus de recherche
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -185,15 +193,19 @@ public class App extends JFrame {
                     JLabel cell = new JLabel(String.valueOf(mazeArray[i][j]), SwingConstants.CENTER);
                     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                    // Color the path green
+                    // Colorer le chemin en vert
                     if (pathFound && isNodeInPath(i, j)) {
                         cell.setOpaque(true);
                         cell.setBackground(Color.GREEN);
-                    }
-                    // Color the fire boxes red
-                    if (mazeArray[i][j] == 'F') {
+                    } // Colorer les cases de feu en rouge
+                    else if (mazeArray[i][j] == 'F') {
                         cell.setOpaque(true);
                         cell.setBackground(Color.RED);
+                    } // Colorer les murs en noir
+                    else if (mazeArray[i][j] == '#') {
+                        cell.setOpaque(true);
+                        cell.setBackground(Color.BLACK);
+                        cell.setForeground(Color.WHITE); // Pour que le texte soit visible
                     }
 
                     mazePanel.add(cell);
@@ -252,11 +264,11 @@ public class App extends JFrame {
     }
 
     private double distance(Node a, Node b) {
-        return 1; // Since we are moving in a grid, the distance between adjacent nodes is always 1
+        return 1; // Puisque nous nous déplaçons dans une grille, la distance entre les nœuds adjacents est toujours de 1
     }
 
     private double heuristic(Node a, Node b) {
-        return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY()); // Manhattan distance
+        return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY()); // Distance de Manhattan
     }
 
     private List<Node> reconstructPath(Node current) {
@@ -275,12 +287,16 @@ public class App extends JFrame {
         loadingFrame.setLocationRelativeTo(this);
 
         JLabel loadingLabel = new JLabel("Recherche en cours...", SwingConstants.CENTER);
-        loadingFrame.add(loadingLabel);
+        loadingFrame.add(loadingLabel, BorderLayout.CENTER);
+
+        JTextArea nodeCoordinatesArea = new JTextArea();
+        nodeCoordinatesArea.setEditable(false);
+        loadingFrame.add(new JScrollPane(nodeCoordinatesArea), BorderLayout.SOUTH);
 
         loadingFrame.setVisible(true);
 
         new Thread(() -> {
-            findShortestPathUsingMainAppLogic();
+            findShortestPathUsingMainAppLogic(nodeCoordinatesArea);
             loadingFrame.dispose();
             SwingUtilities.invokeLater(() -> {
                 showPathWindow();
@@ -288,13 +304,13 @@ public class App extends JFrame {
         }).start();
     }
 
-    private void findShortestPathUsingMainAppLogic() {
+    private void findShortestPathUsingMainAppLogic(JTextArea nodeCoordinatesArea) {
         Graph graph = convertMazeToGraph();
         int start = maze.getPrisonerPosition().getX() * maze.getMaze()[0].length + maze.getPrisonerPosition().getY();
         int goal = maze.getExitPosition().getX() * maze.getMaze()[0].length + maze.getExitPosition().getY();
         LinkedList<Integer> path = AStarSearch.AStar(graph, start, goal, maze.getMaze()[0].length, maze.getMaze().length * maze.getMaze()[0].length);
 
-        // Convert path to Node list
+        // Convertir le chemin en liste de nœuds
         this.path = new ArrayList<>();
         for (int pos : path) {
             int x = pos / maze.getMaze()[0].length;
@@ -304,6 +320,21 @@ public class App extends JFrame {
         pathIndex = 0;
         pathFound = true;
         updateMazeDisplay();
+
+        // Imprimer le chemin sur la ligne de commande
+        System.out.println("Chemin trouvé :");
+        for (Node node : this.path) {
+            System.out.print("(" + node.getX() + ", " + node.getY() + ") ");
+        }
+        System.out.println();
+
+        // Afficher les coordonnées des nœuds dans la fenêtre de chargement
+        SwingUtilities.invokeLater(() -> {
+            nodeCoordinatesArea.setText("Recherche en cours...\n");
+            for (Node node : this.path) {
+                nodeCoordinatesArea.append("(" + node.getX() + ", " + node.getY() + ")\n");
+            }
+        });
     }
 
     private Graph convertMazeToGraph() {
@@ -311,14 +342,14 @@ public class App extends JFrame {
         int cols = maze.getMaze()[0].length;
         Graph graph = new Graph();
 
-        // Add vertices
+        // Ajouter des sommets
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                graph.addVertex(1); // Assuming each cell has a traversal cost of 1
+                graph.addVertex(1); // Supposons que chaque cellule a un coût de traversée de 1
             }
         }
 
-        // Add edges
+        // Ajouter des arêtes
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 int source = i * cols + j;
