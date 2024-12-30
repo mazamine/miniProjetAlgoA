@@ -1,5 +1,12 @@
+package MiniProjet_MAZOUZ;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 public class AStarSearch {
 
@@ -26,19 +33,24 @@ public class AStarSearch {
      * @return the list of nodes representing the shortest path
      */
     public List<Node> findPath(Node start, Node goal) {
+        maze.getPrisonerPosition().setG(0);
+        int number_tries = 0;
+
+        // Initialize the open set with the start node
         openSet.add(start);
-        start.setG(0);
-        start.setH(heuristic(start, goal));
 
         while (!openSet.isEmpty()) {
+            // Get the node with the lowest f value
             Node current = openSet.poll();
 
+            // If we reached the goal, reconstruct the path
             if (current.equals(goal)) {
                 return reconstructPath(current);
             }
 
             closedSet.add(current);
 
+            // Process each neighbor of the current node
             for (Node neighbor : getNeighbors(current)) {
                 if (closedSet.contains(neighbor) || isFireAt(neighbor)) {
                     continue;
@@ -56,6 +68,8 @@ public class AStarSearch {
                 neighbor.setH(heuristic(neighbor, goal));
                 neighbor.setParent(current);
             }
+
+            number_tries += 1;
         }
 
         return Collections.emptyList(); // No path found

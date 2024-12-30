@@ -1,5 +1,3 @@
-// Par Sylvain Lobry, pour le cours "IF05X040 Algorithmique avancée"
-// de l'Université de Paris, 11/2020
 package MainApp;
 
 import MainApp.WeightedGraph.Edge;

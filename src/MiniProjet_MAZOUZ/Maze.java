@@ -1,3 +1,4 @@
+package MiniProjet_MAZOUZ;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

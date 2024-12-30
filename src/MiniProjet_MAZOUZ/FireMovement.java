@@ -1,3 +1,4 @@
+package MiniProjet_MAZOUZ;
 
 public class FireMovement {
 
