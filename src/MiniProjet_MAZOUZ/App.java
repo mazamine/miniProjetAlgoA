@@ -176,16 +176,37 @@ public class App extends JFrame {
             mazePanel.removeAll();
             char[][] mazeArray = maze.getMaze();
             mazePanel.setLayout(new GridLayout(mazeArray.length, mazeArray[0].length));
+
             for (int i = 0; i < mazeArray.length; i++) {
                 for (int j = 0; j < mazeArray[i].length; j++) {
                     JLabel cell = new JLabel(String.valueOf(mazeArray[i][j]), SwingConstants.CENTER);
                     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+                    // Color the path green
+                    if (pathFound && isNodeInPath(i, j)) {
+                        cell.setOpaque(true);
+                        cell.setBackground(Color.GREEN);
+                    } // Color the fire boxes red
+                    else if (mazeArray[i][j] == 'F') {
+                        cell.setOpaque(true);
+                        cell.setBackground(Color.RED);
+                    }
+
                     mazePanel.add(cell);
                 }
             }
             mazePanel.revalidate();
             mazePanel.repaint();
         }
+    }
+
+    private boolean isNodeInPath(int x, int y) {
+        for (Node node : path) {
+            if (node.getX() == x && node.getY() == y) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showCongratsDialog(String title, String message) {
