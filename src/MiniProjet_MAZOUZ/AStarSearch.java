@@ -1,18 +1,13 @@
 package MiniProjet_MAZOUZ;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.LinkedList;
+
+import MiniProjet_MAZOUZ.WeightedGraph.Graph;
 
 public class AStarSearch {
 
     private final Maze maze;
-    private final PriorityQueue<Node> openSet;
-    private final Set<Node> closedSet;
 
     /**
      * Constructor for AStarSearch.
@@ -21,137 +16,81 @@ public class AStarSearch {
      */
     public AStarSearch(Maze maze) {
         this.maze = maze;
-        this.openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getF));
-        this.closedSet = new HashSet<>();
     }
 
     /**
      * Finds the shortest path from start to goal using A* search.
      *
+     * @param graph the graph representing the maze
      * @param start the start node
      * @param goal the goal node
+     * @param ncols the number of columns in the maze
+     * @param numberV the number of vertices in the maze
      * @return the list of nodes representing the shortest path
      */
-    public List<Node> findPath(Node start, Node goal) {
-        maze.getPrisonerPosition().setG(0);
+    public static LinkedList<Integer> AStar(Graph graph, int start, int goal, int ncols, int numberV) {
+        graph.vertexlist.get(start).timeFromSource = 0;
         int number_tries = 0;
 
-        // Initialize the open set with the start node
-        openSet.add(start);
+        // Add all nodes to the set of nodes to visit
+        HashSet<Integer> to_visit = new HashSet<>();
+        for (int i = 0; i < numberV; i++) {
+            to_visit.add(i);
+        }
 
-        while (!openSet.isEmpty()) {
-            // Get the node with the lowest f value
-            Node current = openSet.poll();
+        // Fill the heuristic attribute for all nodes
+        for (WeightedGraph.Vertex v : graph.vertexlist) {
+            int vRow = v.num / ncols;
+            int vCol = v.num % ncols;
 
-            // If we reached the goal, reconstruct the path
-            if (current.equals(goal)) {
-                return reconstructPath(current);
+            int endRow = goal / ncols;
+            int endCol = goal % ncols;
+
+            // Calculate the Manhattan distance to the goal
+            v.heuristic = Math.abs(vRow - endRow) + Math.abs(vCol - endCol);
+        }
+
+        while (to_visit.contains(goal)) {
+            // Find the node with the minimum temporary distance
+            double minDistance = Double.POSITIVE_INFINITY;
+            int min_v = -1;
+
+            for (int v : to_visit) {
+                double totalDistance = graph.vertexlist.get(v).timeFromSource + graph.vertexlist.get(v).heuristic;
+                if (totalDistance < minDistance) {
+                    minDistance = totalDistance;
+                    min_v = v;
+                }
             }
 
-            closedSet.add(current);
-
-            // Process each neighbor of the current node
-            for (Node neighbor : getNeighbors(current)) {
-                if (closedSet.contains(neighbor) || isFireAt(neighbor)) {
-                    continue;
-                }
-
-                double tentativeGScore = current.getG() + distance(current, neighbor);
-
-                if (!openSet.contains(neighbor)) {
-                    openSet.add(neighbor);
-                } else if (tentativeGScore >= neighbor.getG()) {
-                    continue;
-                }
-
-                neighbor.setG(tentativeGScore);
-                neighbor.setH(heuristic(neighbor, goal));
-                neighbor.setParent(current);
-            }
-
+            // Remove the node from the set of nodes to visit
+            to_visit.remove(min_v);
             number_tries += 1;
-        }
 
-        return Collections.emptyList(); // No path found
-    }
+            // Check if we are faster by passing through this node
+            for (int i = 0; i < graph.vertexlist.get(min_v).adjacencylist.size(); i++) {
+                int to_try = graph.vertexlist.get(min_v).adjacencylist.get(i).destination;
+                double newTimeFromSource = graph.vertexlist.get(min_v).timeFromSource
+                        + graph.vertexlist.get(min_v).adjacencylist.get(i).weight;
 
-    /**
-     * Gets the neighbors of the given node.
-     *
-     * @param node the node
-     * @return the list of neighbor nodes
-     */
-    private List<Node> getNeighbors(Node node) {
-        List<Node> neighbors = new ArrayList<>();
-        int x = node.getX();
-        int y = node.getY();
-
-        if (maze.isValidMove(x - 1, y)) {
-            neighbors.add(new Node(x - 1, y, node.getCost() + 1, 0, node));
-        }
-        if (maze.isValidMove(x + 1, y)) {
-            neighbors.add(new Node(x + 1, y, node.getCost() + 1, 0, node));
-        }
-        if (maze.isValidMove(x, y - 1)) {
-            neighbors.add(new Node(x, y - 1, node.getCost() + 1, 0, node));
-        }
-        if (maze.isValidMove(x, y + 1)) {
-            neighbors.add(new Node(x, y + 1, node.getCost() + 1, 0, node));
-        }
-
-        return neighbors;
-    }
-
-    /**
-     * Checks if there is fire at the given node.
-     *
-     * @param node the node
-     * @return true if there is fire at the node, false otherwise
-     */
-    private boolean isFireAt(Node node) {
-        for (int[] firePosition : maze.getFirePositions()) {
-            if (firePosition[0] == node.getX() && firePosition[1] == node.getY()) {
-                return true;
+                if (newTimeFromSource < graph.vertexlist.get(to_try).timeFromSource) {
+                    graph.vertexlist.get(to_try).timeFromSource = newTimeFromSource;
+                    graph.vertexlist.get(to_try).prev = graph.vertexlist.get(min_v);
+                }
             }
         }
-        return false;
-    }
 
-    /**
-     * Calculates the distance between two nodes.
-     *
-     * @param a the first node
-     * @param b the second node
-     * @return the distance between the nodes
-     */
-    private double distance(Node a, Node b) {
-        return 1; // Since we are moving in a grid, the distance between adjacent nodes is always 1
-    }
-
-    /**
-     * Calculates the heuristic value between two nodes.
-     *
-     * @param a the first node
-     * @param b the second node
-     * @return the heuristic value
-     */
-    private double heuristic(Node a, Node b) {
-        return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY()); // Manhattan distance
-    }
-
-    /**
-     * Reconstructs the path from the goal node to the start node.
-     *
-     * @param current the goal node
-     * @return the list of nodes representing the path
-     */
-    private List<Node> reconstructPath(Node current) {
-        List<Node> path = new ArrayList<>();
-        while (current != null) {
-            path.add(current);
-            current = current.getParent();
+        System.out.println("Done! Using A*:");
+        System.out.println("    Number of nodes explored: " + number_tries);
+        System.out.println("    Total time of the path: " + graph.vertexlist.get(goal).timeFromSource);
+        LinkedList<Integer> path = new LinkedList<>();
+        int current = goal;
+        while (current != start) {
+            path.addFirst(current);
+            current = graph.vertexlist.get(current).prev.num;
         }
-        Collections.reverse(path);
+
+        path.addFirst(start);
         return path;
     }
 }

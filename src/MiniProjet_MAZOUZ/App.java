@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -22,6 +23,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
+import MiniProjet_MAZOUZ.WeightedGraph.Graph;
 
 public class App extends JFrame {
 
@@ -186,8 +189,9 @@ public class App extends JFrame {
                     if (pathFound && isNodeInPath(i, j)) {
                         cell.setOpaque(true);
                         cell.setBackground(Color.GREEN);
-                    } // Color the fire boxes red
-                    else if (mazeArray[i][j] == 'F') {
+                    }
+                    // Color the fire boxes red
+                    if (mazeArray[i][j] == 'F') {
                         cell.setOpaque(true);
                         cell.setBackground(Color.RED);
                     }
@@ -276,7 +280,7 @@ public class App extends JFrame {
         loadingFrame.setVisible(true);
 
         new Thread(() -> {
-            findShortestPath();
+            findShortestPathUsingMainAppLogic();
             loadingFrame.dispose();
             SwingUtilities.invokeLater(() -> {
                 showPathWindow();
@@ -284,48 +288,60 @@ public class App extends JFrame {
         }).start();
     }
 
-    private void findShortestPath() {
-        Node start = maze.getPrisonerPosition();
-        Node goal = maze.getExitPosition();
-        start.setG(0);
-        openSet.add(start);
+    private void findShortestPathUsingMainAppLogic() {
+        Graph graph = convertMazeToGraph();
+        int start = maze.getPrisonerPosition().getX() * maze.getMaze()[0].length + maze.getPrisonerPosition().getY();
+        int goal = maze.getExitPosition().getX() * maze.getMaze()[0].length + maze.getExitPosition().getY();
+        LinkedList<Integer> path = AStarSearch.AStar(graph, start, goal, maze.getMaze()[0].length, maze.getMaze().length * maze.getMaze()[0].length);
 
-        while (!openSet.isEmpty()) {
-            Node current = openSet.poll();
+        // Convert path to Node list
+        this.path = new ArrayList<>();
+        for (int pos : path) {
+            int x = pos / maze.getMaze()[0].length;
+            int y = pos % maze.getMaze()[0].length;
+            this.path.add(new Node(x, y, 0, 0, null));
+        }
+        pathIndex = 0;
+        pathFound = true;
+        updateMazeDisplay();
+    }
 
-            if (current.equals(goal)) {
-                path = reconstructPath(current);
-                pathIndex = 0;
-                pathFound = true;
-                return;
-            }
+    private Graph convertMazeToGraph() {
+        int rows = maze.getMaze().length;
+        int cols = maze.getMaze()[0].length;
+        Graph graph = new Graph();
 
-            closedSet.add(current);
-
-            for (Node neighbor : getNeighbors(current)) {
-                if (closedSet.contains(neighbor) || isFireAt(neighbor)) {
-                    continue;
-                }
-
-                double tentativeGScore = current.getG() + distance(current, neighbor);
-
-                if (!openSet.contains(neighbor)) {
-                    openSet.add(neighbor);
-                } else if (tentativeGScore >= neighbor.getG()) {
-                    continue;
-                }
-
-                neighbor.setG(tentativeGScore);
-                neighbor.setH(heuristic(neighbor, goal));
-                neighbor.setParent(current);
-            }
-
-            try {
-                Thread.sleep(100); // Pause to visualize the search process
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        // Add vertices
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                graph.addVertex(1); // Assuming each cell has a traversal cost of 1
             }
         }
+
+        // Add edges
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int source = i * cols + j;
+                if (maze.isValidMove(i - 1, j)) {
+                    int dest = (i - 1) * cols + j;
+                    graph.addEgde(source, dest, 1);
+                }
+                if (maze.isValidMove(i + 1, j)) {
+                    int dest = (i + 1) * cols + j;
+                    graph.addEgde(source, dest, 1);
+                }
+                if (maze.isValidMove(i, j - 1)) {
+                    int dest = i * cols + (j - 1);
+                    graph.addEgde(source, dest, 1);
+                }
+                if (maze.isValidMove(i, j + 1)) {
+                    int dest = i * cols + (j + 1);
+                    graph.addEgde(source, dest, 1);
+                }
+            }
+        }
+
+        return graph;
     }
 
     private void showPathWindow() {

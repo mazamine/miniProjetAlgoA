@@ -160,7 +160,9 @@ public class Maze {
      */
     public void movePrisonerTo(int x, int y) {
         if (isValidMove(x, y)) {
-            maze[prisonerX][prisonerY] = '.'; // Clear the previous position
+            if (maze[prisonerX][prisonerY] == 'P' || maze[prisonerX][prisonerY] == 'D') {
+                maze[prisonerX][prisonerY] = '.'; // Clear the previous position
+            }
             prisonerX = x;
             prisonerY = y;
             maze[prisonerX][prisonerY] = 'P';
