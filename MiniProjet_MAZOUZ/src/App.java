@@ -29,17 +29,22 @@ public class App extends Application {
         launch(args);
     }
 
+    /**
+     * The main entry point for the application.
+     *
+     * @param primaryStage the primary stage for this application
+     */
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Maze Escape");
+        primaryStage.setTitle("Évasion du Labyrinthe");
 
         VBox root = new VBox();
         mazeGrid = new GridPane();
 
-        Button loadMazeButton = new Button("Load Maze");
+        Button loadMazeButton = new Button("Charger le Labyrinthe");
         loadMazeButton.setOnAction(e -> showMazeInputWindow());
 
-        Button nextButton = new Button("Next");
+        Button nextButton = new Button("Suivant");
         nextButton.setOnAction(e -> moveToNextStep());
 
         root.getChildren().addAll(loadMazeButton, nextButton, mazeGrid);
@@ -48,15 +53,18 @@ public class App extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Shows the maze input window.
+     */
     private void showMazeInputWindow() {
         Stage inputStage = new Stage();
-        inputStage.setTitle("Input Maze");
+        inputStage.setTitle("Entrer le Labyrinthe");
 
         VBox inputRoot = new VBox();
         TextArea inputArea = new TextArea();
-        inputArea.setPromptText("Enter your maze here, line by line.");
+        inputArea.setPromptText("Entrez votre labyrinthe ici, ligne par ligne.");
 
-        Button submitButton = new Button("Submit");
+        Button submitButton = new Button("Soumettre");
         submitButton.setOnAction(e -> {
             mazeText = inputArea.getText(); // Store the maze text
             loadMaze(mazeText);
@@ -69,6 +77,11 @@ public class App extends Application {
         inputStage.show();
     }
 
+    /**
+     * Loads the maze from the given text.
+     *
+     * @param mazeText the maze text
+     */
     private void loadMaze(String mazeText) {
         String[] mazeLines = mazeText.split("\n");
         int rows = mazeLines.length;
@@ -88,9 +101,12 @@ public class App extends Application {
         pathIndex = 0;
     }
 
+    /**
+     * Moves to the next step in the solution.
+     */
     private void moveToNextStep() {
         if (path == null || path.isEmpty()) {
-            showGameOverAlert("Game Over", "No path found!");
+            showGameOverAlert("Fin de Partie", "Aucun chemin trouvé !");
             return;
         }
 
@@ -102,11 +118,11 @@ public class App extends Application {
             updateMazeDisplay();
 
             if (maze.getMaze()[maze.getExitX()][maze.getExitY()] == 'F') {
-                showGameOverAlert("Game Over", "The exit has been burned!");
+                showGameOverAlert("Fin de Partie", "La sortie a été brûlée !");
             } else if (maze.getMaze()[currentNode.getX()][currentNode.getY()] == 'F') {
-                showGameOverAlert("Game Over", "The prisoner has been caught by the fire!");
+                showGameOverAlert("Fin de Partie", "Le prisonnier a été attrapé par le feu !");
             } else if (currentNode.equals(maze.getExitPosition())) {
-                showCongratsAlert("Congratulations!", "The prisoner has escaped!");
+                showCongratsAlert("Félicitations !", "Le prisonnier s'est échappé !");
             }
 
             maze.spreadFire();
@@ -115,6 +131,9 @@ public class App extends Application {
         }
     }
 
+    /**
+     * Updates the maze display.
+     */
     private void updateMazeDisplay() {
         if (maze != null) {
             mazeGrid.getChildren().clear();
@@ -130,19 +149,25 @@ public class App extends Application {
         }
     }
 
+    /**
+     * Shows a congratulations alert.
+     *
+     * @param title the title of the alert
+     * @param message the message of the alert
+     */
     private void showCongratsAlert(String title, String message) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
 
-        Button replayButton = new Button("Replay");
+        Button replayButton = new Button("Rejouer");
         replayButton.setOnAction(e -> {
             alert.close();
             loadMaze(mazeText); // Reload the same maze
         });
 
-        Button closeButton = new Button("Close");
+        Button closeButton = new Button("Fermer");
         closeButton.setOnAction(e -> Platform.exit());
 
         VBox alertContent = new VBox();
@@ -152,19 +177,25 @@ public class App extends Application {
         alert.showAndWait();
     }
 
+    /**
+     * Shows a game over alert.
+     *
+     * @param title the title of the alert
+     * @param message the message of the alert
+     */
     private void showGameOverAlert(String title, String message) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
 
-        Button replayButton = new Button("Replay");
+        Button replayButton = new Button("Rejouer");
         replayButton.setOnAction(e -> {
             alert.close();
             loadMaze(mazeText); // Reload the same maze
         });
 
-        Button exitButton = new Button("Exit");
+        Button exitButton = new Button("Quitter");
         exitButton.setOnAction(e -> Platform.exit());
 
         VBox alertContent = new VBox();

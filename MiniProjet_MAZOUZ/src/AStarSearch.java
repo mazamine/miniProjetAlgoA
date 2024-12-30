@@ -7,12 +7,24 @@ public class AStarSearch {
     private final PriorityQueue<Node> openSet;
     private final Set<Node> closedSet;
 
+    /**
+     * Constructor for AStarSearch.
+     *
+     * @param maze the maze
+     */
     public AStarSearch(Maze maze) {
         this.maze = maze;
         this.openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getF));
         this.closedSet = new HashSet<>();
     }
 
+    /**
+     * Finds the shortest path from start to goal using A* search.
+     *
+     * @param start the start node
+     * @param goal the goal node
+     * @return the list of nodes representing the shortest path
+     */
     public List<Node> findPath(Node start, Node goal) {
         openSet.add(start);
         start.setG(0);
@@ -49,6 +61,12 @@ public class AStarSearch {
         return Collections.emptyList(); // No path found
     }
 
+    /**
+     * Gets the neighbors of the given node.
+     *
+     * @param node the node
+     * @return the list of neighbor nodes
+     */
     private List<Node> getNeighbors(Node node) {
         List<Node> neighbors = new ArrayList<>();
         int x = node.getX();
@@ -70,6 +88,12 @@ public class AStarSearch {
         return neighbors;
     }
 
+    /**
+     * Checks if there is fire at the given node.
+     *
+     * @param node the node
+     * @return true if there is fire at the node, false otherwise
+     */
     private boolean isFireAt(Node node) {
         for (int[] firePosition : maze.getFirePositions()) {
             if (firePosition[0] == node.getX() && firePosition[1] == node.getY()) {
@@ -79,14 +103,34 @@ public class AStarSearch {
         return false;
     }
 
+    /**
+     * Calculates the distance between two nodes.
+     *
+     * @param a the first node
+     * @param b the second node
+     * @return the distance between the nodes
+     */
     private double distance(Node a, Node b) {
         return 1; // Since we are moving in a grid, the distance between adjacent nodes is always 1
     }
 
+    /**
+     * Calculates the heuristic value between two nodes.
+     *
+     * @param a the first node
+     * @param b the second node
+     * @return the heuristic value
+     */
     private double heuristic(Node a, Node b) {
         return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY()); // Manhattan distance
     }
 
+    /**
+     * Reconstructs the path from the goal node to the start node.
+     *
+     * @param current the goal node
+     * @return the list of nodes representing the path
+     */
     private List<Node> reconstructPath(Node current) {
         List<Node> path = new ArrayList<>();
         while (current != null) {
