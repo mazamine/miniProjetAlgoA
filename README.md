@@ -41,7 +41,7 @@ prisoner-pardon-maze
 Pour compiler les fichiers Java exécutez :
 
 ```sh
-PS C:\Users\amine\Desktop\MiniProjet> javac -d bin .\src\MiniProjet_MAZOUZ\*.java
+javac -d bin .\src\MiniProjet_MAZOUZ\*.java
 ```
 
 Cette commande compile les fichiers Java et place les classes compilées dans le répertoire `bin`.
@@ -51,7 +51,7 @@ Cette commande compile les fichiers Java et place les classes compilées dans le
 Pour exécuter l'application, utilisez la commande suivante :
 
 ```sh
-PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MiniProjet_MAZOUZ.App
+java -cp bin MiniProjet_MAZOUZ.App
 ```
 
 ## Partie 2 : Évasion du Labyrinthe
@@ -68,7 +68,7 @@ PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MiniProjet_MAZOUZ.App
 Pour compiler les fichiers Java, naviguez vers le répertoire `src` et exécutez :
 
 ```sh
-PS C:\Users\amine\Desktop\MiniProjet> javac -d bin .\src\MainApp\*.java
+javac -d bin .\src\MainApp\*.java
 ```
 
 Cette commande compile les fichiers Java et place les classes compilées dans la structure de répertoires correcte.
@@ -78,7 +78,7 @@ Cette commande compile les fichiers Java et place les classes compilées dans la
 Pour exécuter l'application, utilisez la commande suivante :
 
 ```sh
-PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MainApp.App C:\Users\amine\Desktop\MiniProjet\graph.txt djikstra
+java -cp bin MainApp.App chemin\vers\fichier\graph.txt algorithme
 ```
 
 - `<chemin_vers_fichier_graph>`: Chemin vers le fichier `graph.txt`.
@@ -89,13 +89,13 @@ PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MainApp.App C:\Users\amine\De
 Exécuter l'application en utilisant l'algorithme de Dijkstra :
 
 ```sh
-PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MainApp.App C:\Users\amine\Desktop\MiniProjet\graph.txt dijkstra
+java -cp bin MainApp.App C:\MiniProjet\graph.txt dijkstra
 ```
 
 Exécuter l'application en utilisant l'algorithme A* :
 
 ```sh
-PS C:\Users\amine\Desktop\MiniProjet> java -cp bin MainApp.App C:\Users\amine\Desktop\MiniProjet\graph.txt astar
+java -cp bin MainApp.App C:\MiniProjet\graph.txt astar
 ```
 
 ### Sortie
